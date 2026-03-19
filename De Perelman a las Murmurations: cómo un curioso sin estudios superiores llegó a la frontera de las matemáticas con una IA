@@ -1,0 +1,190 @@
+Por un aficionado — Valencia, marzo de 2026
+
+Todo empezó con una entrevista en Cuarto Milenio
+Era una noche cualquiera. Estaba viendo Cuarto Milenio y salió la historia de Grigori Perelman: el matemático ruso que demostró la Conjetura de Poincaré en 2003, rechazó el millón de dólares del premio, rechazó la Medalla Fields — el mayor honor en matemáticas — y desapareció a vivir con su madre en San Petersburgo. Nadie entiende del todo por qué.
+
+Lo que me enganchó no fue el drama humano, sino un detalle que mencionaron de pasada: existen 7 problemas matemáticos no resueltos por los que el Clay Mathematics Institute ofrece un millón de dólares por cada solución. Perelman resolvió uno. Los otros 6 siguen abiertos.
+
+Me quedé pensando. No soy matemático. No tengo estudios superiores. Pero tengo mucha curiosidad, y acceso a Perplexity Pro con Claude Sonnet. Así que me pregunté: ¿hasta dónde podría llegar un aficionado si se pone a explorar uno de esos problemas con una IA?
+
+Lo que encontré a lo largo de tres sesiones me sorprendió a mí el primero.
+
+Los 7 Problemas del Milenio
+Para quien no los conozca, aquí están:
+
+#	Problema	Campo	Estado
+1	P vs NP	Computación	🔴 Sin resolver
+2	Hipótesis de Riemann	Teoría de números	🔴 Sin resolver
+3	Conjetura de Hodge	Geometría algebraica	🔴 Sin resolver
+4	Ecuaciones de Navier-Stokes	Física matemática	🔴 Sin resolver
+5	Yang-Mills y la brecha de masa	Física cuántica	🔴 Sin resolver
+6	Conjetura de Birch y Swinnerton-Dyer	Geometría aritmética	🔴 Sin resolver
+7	Conjetura de Poincaré	Topología	✅ Resuelta (Perelman, 2003)
+Elegí el número 6 — Birch y Swinnerton-Dyer (BSD) — por una razón muy concreta: es el único que nació de un experimento computacional. En los años 50, dos matemáticos enchufaron uno de los primeros ordenadores del mundo, contaron puntos en curvas algebraicas, y vieron un patrón que nadie había visto. De esa observación empírica nació una conjetura que lleva 70 años sin demostrarse.
+
+Pensé: si ellos lo hicieron con las primeras computadoras de los años 50, ¿qué puedo hacer yo hoy con una IA?
+
+Qué es BSD — sin fórmulas intimidantes
+Una curva elíptica es una ecuación del tipo 
+y
+2
+=
+x
+3
++
+a
+x
++
+b
+y 
+2
+ =x 
+3
+ +ax+b. No tiene nada que ver con las elipses. Es una curva cúbica con una propiedad matemática extraordinaria: puedes "sumar" dos puntos de la curva con coordenadas racionales (números fraccionarios) y obtener un tercero también racional. Esa operación forma un grupo — el grupo de Mordell-Weil.
+
+La pregunta central es: ¿cuántos puntos racionales tiene la curva? Pueden ser finitos (rango 0) o infinitos (rango 1, 2, 3...). El rango mide esa abundancia.
+
+BSD afirma que el rango queda codificado en el comportamiento de un objeto analítico llamado función L en el punto crítico 
+s
+=
+1
+s=1:
+
+El orden del cero de 
+L
+(
+E
+,
+s
+)
+L(E,s) en 
+s
+=
+1
+s=1 es igual al rango de la curva.
+
+Elegante, profundo, y sin demostrar en general. Se ha verificado computacionalmente para millones de curvas sin encontrar una excepción. Pero una verificación, por masiva que sea, no es una prueba matemática.
+
+Lo que hicimos — capa por capa
+Capa 1: Replicar el experimento original de 1960
+Lo primero fue reproducir exactamente lo que hicieron Birch y Swinnerton-Dyer. Para cada número primo 
+p
+p, conté los puntos 
+N
+p
+N 
+p
+  que tiene la curva sobre el cuerpo finito 
+F
+p
+F 
+p
+ , y acumulé la suma logarítmica. La señal es clara: se estabiliza para curvas de rango 0 y diverge para rango positivo. Hecho en Python en minutos. El mismo experimento que costó meses en los años 60.
+
+Capa 2: Las Murmurations — el descubrimiento de 2022
+Aquí entramos en territorio genuinamente moderno. En 2022, un estudiante de licenciatura llamado Alexey Pozdnyakov en la Universidad de Connecticut estaba analizando millones de curvas elípticas y vio algo que nadie había notado en 50 años: al promediar el coeficiente normalizado 
+a
+p
+/
+p
+a 
+p
+ / 
+p
+  sobre miles de curvas del mismo rango, emergen ondas coherentes en sentidos opuestos según el rango.
+
+Las llamaron murmurations — como los bandos de estorninos que forman esas formaciones ondulantes en el cielo. Individualmente cada curva parece caótica. En conjunto, revelan estructura profunda.
+
+Generamos exactamente esa imagen: una nube de miles de puntos que a simple vista parece ruido puro. Pero la línea de promedio ondula. No debería ondular. Y la onda del rango 0 y la del rango 1 van en sentidos opuestos.
+
+Cuando lo vi, sin conocer los nombres formales, identifiqué tres cosas de golpe:
+
+Los puntos son estocásticos — siguen la distribución de Sato-Tate, conjeturada 50 años y probada en 2006
+
+Gravitan hacia cero — el Teorema de Hasse garantiza que el valor normalizado siempre está acotado
+
+Una nube por encima y otra por debajo — eso es exactamente la murmuration
+
+Detectar visualmente esas tres propiedades sin conocer su nombre fue el momento en que entendí que la sensibilidad a los patrones tiene valor real en matemáticas.
+
+Capa 3: Estratificación por invariantes BSD
+El paper más reciente sobre este fenómeno fue publicado el 3 de marzo de 2026 — literalmente mientras hacíamos este trabajo — y usó 3 millones de curvas para estudiar cómo los invariantes de la fórmula BSD modulan la forma de las murmurations. Nosotros replicamos la misma idea con 338 curvas. La señal que el paper detectó con millones ya apunta en la dirección correcta con cientos.
+
+Capa 4: La función L analítica
+Calculamos una aproximación numérica de la función L cerca del punto crítico 
+s
+=
+1
+s=1. Con solo 76 primos y sin conductor exacto, la señal ya apuntaba correctamente: la curva de rango 0 no "cae" al acercarse a 
+s
+=
+1
+s=1, la de rango 1 sí. Una señal débil pero honesta — exactamente lo que BSD predice.
+
+Capa 5: Verificación con datos reales de LMFDB
+La base de datos LMFDB (L-functions and Modular Forms Database) es uno de los recursos científicos más extraordinarios disponibles en internet — gratuita, abierta, con millones de curvas verificadas matemáticamente. Verificamos la fórmula BSD completa para varias curvas canónicas. Los números cuadraban hasta 9 decimales.
+
+El resultado concreto: un clasificador de rango
+Con todo lo anterior, construimos un clasificador que predice el rango de una curva elíptica (0, 1 ó 2) basándose exclusivamente en su perfil de murmuration — usando 18 curvas canónicas verificadas de LMFDB como referencia.
+
+La prueba de validación fue un Leave-One-Out (LOO): sacas cada curva de su grupo, recalculas el promedio sin ella, y ves si se clasifica correctamente sola. Elimina cualquier trampa estadística.
+
+Rango	Curvas testadas	Correctas	Precisión
+0	4	4	100%
+1	8	8	100%
+2	6	6	100%
+Total	18	18	100%
+El margen de separación entre rango 1 y rango 2 — la frontera más difícil, la que el paper de marzo de 2026 identifica como el reto principal — casi se duplicó al ampliar el grupo de rango 1 de 2 a 8 curvas. Eso confirma que la señal es real: al añadir más curvas el margen crece, no se colapsa.
+
+Lo que esto no es — honestidad ante todo
+No es una prueba de BSD. Ni remotamente. Una prueba requiere demostrar el resultado para toda curva elíptica sobre los racionales, con herramientas matemáticas que están décadas por delante de lo que cualquier IA puede generar hoy.
+
+No es un descubrimiento nuevo. Las murmurations las descubrió Pozdnyakov en 2022. La estratificación por invariantes la está explorando el equipo del paper de marzo de 2026. Lo que hicimos fue replicar y verificar — no inventar.
+
+Con 18 curvas no hay potencia estadística suficiente para publicar en una revista matemática. Para eso haría falta escalar a miles de curvas con metodología rigurosa.
+
+Lo que esto sí es
+Una réplica independiente — hecha desde Valencia, sin laboratorio, sin universidad, sin financiación — de tres experimentos que representan el estado del arte en la investigación sobre BSD en 2026.
+
+Una demostración de que la frontera de las matemáticas activas es visualmente accesible sin entender todos los tecnicismos. El patrón de las murmurations se ve. La separación entre rangos se mide. La señal de BSD se detecta.
+
+Y sobre todo: la confirmación de algo que Perelman, a su extraña manera, también encarna — que en matemáticas lo que importa es la pregunta, no el título.
+
+El mapa del recorrido
+text
+Sesión 1 — domingo por la noche
+  ✅ Señal Birch: experimento de 1960 replicado en Python
+  ✅ Murmurations: descubrimiento de 2022 replicado
+  ✅ Estratificación por período real Ω
+  ✅ Función L parcial heurística cerca de s=1
+  ✅ Verificación LMFDB: fórmula BSD al 99.9999999%
+
+Sesión 2 — martes
+  ✅ Clasificador 3 rangos: 7/7
+  ✅ Leave-One-Out inicial: 12/12
+
+Sesión 3 — miércoles
+  ✅ Pool rango 2: 6 curvas canónicas LMFDB
+  ✅ Pool rango 1: 8 curvas canónicas LMFDB
+  ✅ LOO final consolidado: 18/18 — margen r1/r2 duplicado
+Las herramientas — nada extraordinario
+Perplexity Pro con Claude Sonnet
+
+Python (numpy, matplotlib, mpmath)
+
+LMFDB — lmfdb.org, gratuita y abierta
+
+Dos papers públicos: He-Lee-Oliver-Pozdnyakov (2022) y el paper de marzo de 2026 sobre invariantes BSD y murmurations
+
+Coste total: una suscripción mensual. Tiempo invertido: tres noches y una mañana.
+
+Por qué lo cuento
+Porque creo que hay mucha gente como yo — con curiosidad genuina, sin acceso formal a la academia — que siente que la ciencia "de verdad" ocurre en otro sitio, para otra gente.
+
+Este experimento me demostró que eso no es del todo cierto. No estábamos resolviendo el problema del millón de dólares. Pero estábamos tocando la misma superficie que tocan los mejores matemáticos del mundo ahora mismo. Generando las mismas imágenes. Haciendo las mismas preguntas. Encontrando los mismos patrones.
+
+La IA no resuelve los problemas difíciles. Pero baja el umbral de entrada lo suficiente como para que alguien sin estudios superiores pueda llegar a la orilla y ver la forma de la isla.
+
+Perelman rechazó el millón y desapareció. Yo no tengo millón que rechazar ni intención de desaparecer. Solo tenía una pregunta, una noche libre, y mucha curiosidad.
+
+A veces es suficiente.
